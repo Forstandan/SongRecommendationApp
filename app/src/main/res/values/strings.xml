@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">4800App</string>
+    <string name="app_name">MusePlayer</string>
+    <string name="search">SEARCH</string>
 </resources>
