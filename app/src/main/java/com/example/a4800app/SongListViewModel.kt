@@ -1,22 +1,18 @@
 package com.example.a4800app
 
-import com.google.gson.Gson
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.ResponseBody
 import org.json.JSONArray
 import java.io.IOException
 
 class SongListViewModel : ViewModel() {
-    val playlist = mutableListOf<Song>()
-    var searchResults = mutableListOf<Song>()
+    var songs = mutableListOf<Song>()
 
     var limit = 10
     val baseURL = "https://personal-music-recommendation.azurewebsites.net/api/search"
@@ -24,8 +20,33 @@ class SongListViewModel : ViewModel() {
     val client = OkHttpClient()
 
     init {
-        viewModelScope.launch{
+        viewModelScope.launch{}
+        val song1 = Song(
+            songURL = "https://open.spotify.com/track/6KWlIAypAbAjCH31fxBhab",
+            imageURL = "https://i.scdn.co/image/ab67616d0000b2735fb6d9b4948a069f31bc003b",
+            name = "Russian Overture, Op. 72",
+            artist = "Sergei Prokofiev"
+        )
 
+        songs += song1
+    }
+
+    companion object : Subject{
+        private val observers = mutableListOf<Observer>()
+
+        override fun attachObserver(observer: Observer) {
+            observers += observer
+        }
+
+        override fun detachObserver(observer: Observer) {
+            observers -= observer
+        }
+
+        override fun notifyObserver() {
+            observers.forEach { observer ->
+                observer.update()
+                Log.d("update", "updating screen")
+            }
         }
     }
 
@@ -64,7 +85,7 @@ class SongListViewModel : ViewModel() {
 
     private fun parseJson(responseBody : String?) {
         val jsonArray = JSONArray(responseBody)
-
+        songs.clear()
 
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
@@ -77,8 +98,10 @@ class SongListViewModel : ViewModel() {
                 artist = jsonObject.getString("artists"),
             )
 
-            searchResults += song
+            songs += song
             Log.d("tag", "" + song)
         }
+
+        notifyObserver()
     }
 }

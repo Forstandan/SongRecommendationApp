@@ -27,9 +27,10 @@ class SongListFragment : Fragment(R.layout.fragment_song_list) {
         }
 
     private val songListViewModel: SongListViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "Total songs: ${songListViewModel.playlist.size}")
+        Log.d(TAG, "Total songs: ${songListViewModel.songs.size}")
     }
 
     override fun onCreateView(
@@ -41,7 +42,7 @@ class SongListFragment : Fragment(R.layout.fragment_song_list) {
 
         binding.songRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        val songs = songListViewModel.playlist
+        val songs = songListViewModel.songs
         val adapter = SongListAdapter(songs)
         binding.songRecyclerView.adapter = adapter
 
@@ -82,5 +83,4 @@ class SongListFragment : Fragment(R.layout.fragment_song_list) {
         super.onDestroyView()
         _binding = null
     }
-
 }
