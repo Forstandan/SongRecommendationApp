@@ -65,17 +65,20 @@ class SongListViewModel : ViewModel() {
     private fun parseJson(responseBody : String?) {
         val jsonArray = JSONArray(responseBody)
 
+
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
+            Log.d("tag", "" + jsonObject)
 
             val song = Song(
                 songURL = jsonObject.getString("external_url"),
-                imageURL = jsonObject.getString("url"),
+                imageURL = jsonObject.getJSONArray("images").getJSONObject(0).getString("url"),
                 name = jsonObject.getString("name"),
                 artist = jsonObject.getString("artists"),
             )
 
             searchResults += song
+            Log.d("tag", "" + song)
         }
     }
 }
