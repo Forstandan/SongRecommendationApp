@@ -3,6 +3,7 @@ package com.example.a4800app
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,9 +43,9 @@ class SongListViewModel : ViewModel() {
             observers -= observer
         }
 
-        override fun notifyObserver() {
+        override fun notifyObserver(viewModelScope: CoroutineScope) {
             observers.forEach { observer ->
-                observer.update()
+                observer.update(viewModelScope)
                 Log.d("update", "updating screen")
             }
         }
@@ -102,6 +103,6 @@ class SongListViewModel : ViewModel() {
             Log.d("tag", "" + song)
         }
 
-        notifyObserver()
+        notifyObserver(viewModelScope)
     }
 }

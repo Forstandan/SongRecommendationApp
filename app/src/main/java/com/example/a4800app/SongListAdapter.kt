@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4800app.databinding.ListItemSongBinding
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class SongHolder(val binding: ListItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
-
 }
 
 class SongListAdapter(private val songs: List<Song>) : RecyclerView.Adapter<SongHolder>(), Observer {
@@ -32,8 +32,8 @@ class SongListAdapter(private val songs: List<Song>) : RecyclerView.Adapter<Song
         }
     }
     override fun getItemCount() = songs.size
-    override fun update() {
-        GlobalScope.launch(Dispatchers.Main) {
+    override fun update(viewModelScope: CoroutineScope) {
+        viewModelScope.launch(Dispatchers.Main) {
             notifyDataSetChanged()
             Log.d("notification", "notified")
         }
