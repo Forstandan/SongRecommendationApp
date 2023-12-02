@@ -22,6 +22,7 @@ class SongListViewModel : ViewModel() {
 
     init {
         viewModelScope.launch{}
+        setViewModelScope(viewModelScope)
         val song1 = Song(
             songURL = "https://open.spotify.com/track/6KWlIAypAbAjCH31fxBhab",
             imageURL = "https://i.scdn.co/image/ab67616d0000b2735fb6d9b4948a069f31bc003b",
@@ -34,6 +35,15 @@ class SongListViewModel : ViewModel() {
 
     companion object : Subject{
         private val observers = mutableListOf<Observer>()
+        private lateinit var viewModelScope : CoroutineScope
+
+        fun getViewModelScope() : CoroutineScope {
+            return viewModelScope
+        }
+
+        fun setViewModelScope(viewModelScope: CoroutineScope) {
+            this.viewModelScope = viewModelScope
+        }
 
         override fun attachObserver(observer: Observer) {
             observers += observer
@@ -43,10 +53,12 @@ class SongListViewModel : ViewModel() {
             observers -= observer
         }
 
-        override fun notifyObserver(viewModelScope: CoroutineScope) {
-            observers.forEach { observer ->
-                observer.update(viewModelScope)
-                Log.d("update", "updating screen")
+        override fun notifyObserver() {
+            for (observer in observers) {
+                if (observer is SongListAdapter) {
+                    observer.setViewModelScope(getViewModelScope())
+                }
+                observer.update()
             }
         }
     }
@@ -96,13 +108,18 @@ class SongListViewModel : ViewModel() {
                 songURL = jsonObject.getString("external_url"),
                 imageURL = jsonObject.getJSONArray("images").getJSONObject(0).getString("url"),
                 name = jsonObject.getString("name"),
-                artist = jsonObject.getString("artists"),
+                artist = parseString(jsonObject.getString("artists")),
             )
 
             songs += song
             Log.d("tag", "" + song)
         }
 
-        notifyObserver(viewModelScope)
+        notifyObserver()
+    }
+
+    private fun parseString(string: String) : String {
+        val result = string.replace(Regex("[\'\"\\[\\]]"), "")
+        return result.replace(Regex(","), ", ")
     }
 }

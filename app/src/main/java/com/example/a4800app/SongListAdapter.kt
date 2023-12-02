@@ -2,7 +2,9 @@ package com.example.a4800app
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4800app.databinding.ListItemSongBinding
 import com.squareup.picasso.Picasso
@@ -12,9 +14,36 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class SongHolder(val binding: ListItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(song : Song) {
+        binding.root.setOnClickListener {
+            SongListAdapter.notifyObserver()
+        }
+    }
 }
 
 class SongListAdapter(private val songs: List<Song>) : RecyclerView.Adapter<SongHolder>(), Observer {
+    private lateinit var viewModelScope : CoroutineScope
+
+    companion object : Subject {
+        private val observers = mutableListOf<Observer>()
+        override fun attachObserver(observer: Observer) {
+            observers += observer
+        }
+
+        override fun detachObserver(observer: Observer) {
+            observers -= observer
+        }
+
+        override fun notifyObserver() {
+            for (observer in observers) {
+                observer.update()
+            }
+        }
+
+    }
+    fun setViewModelScope(viewModelScope: CoroutineScope) {
+        this.viewModelScope = viewModelScope
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : SongHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -30,9 +59,10 @@ class SongListAdapter(private val songs: List<Song>) : RecyclerView.Adapter<Song
             binding.songName.text = song.name
             binding.songArtist.text = song.artist
         }
+        holder.bind(song)
     }
     override fun getItemCount() = songs.size
-    override fun update(viewModelScope: CoroutineScope) {
+    override fun update() {
         viewModelScope.launch(Dispatchers.Main) {
             notifyDataSetChanged()
             Log.d("notification", "notified")

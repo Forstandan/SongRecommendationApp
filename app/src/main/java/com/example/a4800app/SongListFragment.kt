@@ -16,10 +16,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a4800app.databinding.FragmentSongListBinding
+import kotlinx.coroutines.CoroutineScope
 
 private const val TAG = "SongListFragment"
 
-class SongListFragment : Fragment(R.layout.fragment_song_list) {
+class SongListFragment : Fragment(R.layout.fragment_song_list), Observer {
     private var _binding: FragmentSongListBinding? = null
     private val binding
         get() = checkNotNull(_binding) {
@@ -52,6 +53,8 @@ class SongListFragment : Fragment(R.layout.fragment_song_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        SongListAdapter.attachObserver(this)
+
         (requireActivity() as MenuHost).addMenuProvider(object: MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.fragment_song_list, menu)
@@ -82,5 +85,18 @@ class SongListFragment : Fragment(R.layout.fragment_song_list) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun update() {
+        (requireActivity() as MenuHost).addMenuProvider(object: MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.fragment_song_list, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                TODO("Not yet implemented")
+            }
+
+        }, viewLifecycleOwner)
     }
 }
