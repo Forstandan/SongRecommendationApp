@@ -13,17 +13,21 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a4800app.databinding.FragmentSongListBinding
-import kotlinx.coroutines.CoroutineScope
+import com.example.a4800app.databinding.ListItemSongBinding
 
 private const val TAG = "SongListFragment"
 
 class SongListFragment : Fragment(R.layout.fragment_song_list), Observer {
     private var _binding: FragmentSongListBinding? = null
+    private var _listItemSongBinding: ListItemSongBinding? = null
     private val binding
         get() = checkNotNull(_binding) {
+            "Cannot access binding because it is null. Is the view visible?"
+        }
+    private val listItemSongBinding
+        get() = checkNotNull(_listItemSongBinding) {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
@@ -34,13 +38,25 @@ class SongListFragment : Fragment(R.layout.fragment_song_list), Observer {
         Log.d(TAG, "Total songs: ${songListViewModel.songs.size}")
     }
 
+    companion object {
+        private var isViewingPlaylist = true
+
+        fun isViewingPlaylist() : Boolean {
+            return isViewingPlaylist
+        }
+
+        fun setIsViewingPlaylist(isViewingPlaylist : Boolean) {
+            this.isViewingPlaylist = isViewingPlaylist
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentSongListBinding.inflate(inflater, container, false)
-
+        _listItemSongBinding = ListItemSongBinding.inflate(inflater, container, false)
         binding.songRecyclerView.layoutManager = LinearLayoutManager(context)
 
         val songs = songListViewModel.songs
@@ -65,6 +81,8 @@ class SongListFragment : Fragment(R.layout.fragment_song_list), Observer {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         Log.d(TAG, "QueryTextSubmit: $query")
                         songListViewModel.setQuery(query ?: "")
+                        setIsViewingPlaylist(false)
+                        listItemSongBinding.addToPlaylist.visibility = View.VISIBLE
                         return true
                     }
                     override fun onQueryTextChange(newText: String?): Boolean {

@@ -3,6 +3,8 @@ package com.example.a4800app
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -10,6 +12,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
+import java.io.FileReader
 import java.io.IOException
 
 class SongListViewModel : ViewModel() {
@@ -21,16 +24,15 @@ class SongListViewModel : ViewModel() {
     val client = OkHttpClient()
 
     init {
-        viewModelScope.launch{}
+        viewModelScope.launch{
+            songs.clear()
+            if (MainActivity.file.length().toInt() != 0) {
+                MainActivity.file.forEachLine { line ->
+                    songs += parseString(line)
+                }
+            }
+        }
         setViewModelScope(viewModelScope)
-        val song1 = Song(
-            songURL = "https://open.spotify.com/track/6KWlIAypAbAjCH31fxBhab",
-            imageURL = "https://i.scdn.co/image/ab67616d0000b2735fb6d9b4948a069f31bc003b",
-            name = "Russian Overture, Op. 72",
-            artist = "Sergei Prokofiev"
-        )
-
-        songs += song1
     }
 
     companion object : Subject{
@@ -108,7 +110,7 @@ class SongListViewModel : ViewModel() {
                 songURL = jsonObject.getString("external_url"),
                 imageURL = jsonObject.getJSONArray("images").getJSONObject(0).getString("url"),
                 name = jsonObject.getString("name"),
-                artist = parseString(jsonObject.getString("artists")),
+                artist = removeChar(jsonObject.getString("artists")),
             )
 
             songs += song
@@ -118,8 +120,19 @@ class SongListViewModel : ViewModel() {
         notifyObserver()
     }
 
-    private fun parseString(string: String) : String {
+    private fun removeChar(string : String) : String {
         val result = string.replace(Regex("[\'\"\\[\\]]"), "")
         return result.replace(Regex(","), ", ")
+    }
+
+    private fun parseString(string : String) : Song {
+        val tokens = string.split(",")
+        Log.d("print string", tokens.toString())
+        return Song(
+            songURL = tokens[0],
+            imageURL = tokens[1],
+            name = tokens[2],
+            artist = tokens[3]
+        )
     }
 }
