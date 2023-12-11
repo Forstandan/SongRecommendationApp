@@ -1,5 +1,6 @@
 package com.example.a4800app
 
+import android.graphics.drawable.Drawable
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +10,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
@@ -82,7 +85,8 @@ class SongListFragment : Fragment(R.layout.fragment_song_list), Observer {
                         Log.d(TAG, "QueryTextSubmit: $query")
                         songListViewModel.setQuery(query ?: "")
                         setIsViewingPlaylist(false)
-                        listItemSongBinding.addToPlaylist.visibility = View.VISIBLE
+                        val icon : Drawable? = context?.let { ContextCompat.getDrawable(it, R.drawable.baseline_add_24) }
+                        _listItemSongBinding?.editPlaylist?.setImageDrawable(icon)
                         return true
                     }
                     override fun onQueryTextChange(newText: String?): Boolean {
@@ -90,10 +94,22 @@ class SongListFragment : Fragment(R.layout.fragment_song_list), Observer {
                         return false
                     }
                 })
+
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                TODO("Not yet implemented")
+                when (menuItem.itemId) {
+                    R.id.home_button -> {
+                        val songListViewModel: SongListViewModel by viewModels()
+                        songListViewModel.getPlaylist()
+                        setIsViewingPlaylist(true)
+                        return true
+                    }
+                    R.id.recommendations_button -> {
+
+                    }
+                }
+                return false
             }
 
         }, viewLifecycleOwner)

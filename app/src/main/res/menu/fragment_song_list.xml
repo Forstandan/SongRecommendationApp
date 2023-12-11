@@ -9,11 +9,12 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
+        android:id="@+id/home_button"
+        android:title="Home"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/recommendations_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:icon="@drawable/baseline_lightbulb_24"
-        android:title="@+id/search"
-        app:showAsAction="always"
-        />
+        android:title="Recommendations"
+        app:showAsAction="never" />
 </menu>

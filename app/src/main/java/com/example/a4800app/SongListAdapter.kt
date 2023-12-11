@@ -20,7 +20,7 @@ class SongHolder(val binding: ListItemSongBinding, songs: MutableList<Song>) : R
 //        binding.root.setOnClickListener {
 //            SongListAdapter.notifyObserver()
 //        }
-        binding.addToPlaylist.setOnClickListener {
+        binding.editPlaylist.setOnClickListener {
             val string = "${binding.songUrl.text},${binding.imageUrl.text},${binding.songName.text},${binding.songArtist.text}\n"
             MainActivity.file.appendText(string)
             Log.d("file read", "" + MainActivity.file.readText())
@@ -57,7 +57,6 @@ class SongListAdapter(private val songs: MutableList<Song>) : RecyclerView.Adapt
     fun setViewModelScope(viewModelScope: CoroutineScope) {
         this.viewModelScope = viewModelScope
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : SongHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemSongBinding.inflate(inflater, parent, false)

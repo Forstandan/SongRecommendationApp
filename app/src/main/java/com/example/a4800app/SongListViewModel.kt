@@ -25,12 +25,7 @@ class SongListViewModel : ViewModel() {
 
     init {
         viewModelScope.launch{
-            songs.clear()
-            if (MainActivity.file.length().toInt() != 0) {
-                MainActivity.file.forEachLine { line ->
-                    songs += parseString(line)
-                }
-            }
+            getPlaylist()
         }
         setViewModelScope(viewModelScope)
     }
@@ -71,6 +66,17 @@ class SongListViewModel : ViewModel() {
 
     fun setTrackLimit(limit: Int) {
 
+    }
+
+    fun getPlaylist() {
+        songs.clear()
+        if (MainActivity.file.length().toInt() != 0) {
+            MainActivity.file.forEachLine { line ->
+                songs += parseString(line)
+            }
+        }
+
+        notifyObserver()
     }
 
     private suspend fun searchSongs(query: String, limit: Int) {
