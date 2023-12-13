@@ -1,10 +1,12 @@
 **Program Instructions (Requires Android Studios)**
 - Download and extract the zip file
 - Open up Android Studios and press File -> Open. When you find where the file is stored, expand the file and click on the first file that bears the same name as the folder. It should have a green android symbol next to it.
+
   ![image](https://github.com/Forstandan/SongRecommendationApp/assets/114364542/13b99449-9c7c-4ab5-8462-c7055d2f3d3c)
 - Follow the popup instructions on screen. Once this is done, Android Studios should begin building the gradle. Wait for this to finish.
 - After Android Studios finishes building the project, you may run the project using the run button in the top right portion of the screen.
   ![image](https://github.com/Forstandan/SongRecommendationApp/assets/114364542/404fcc9d-e1c3-43ca-a1ad-125078d978d9)
+  
 **App Navigation**
 - Once you open the app, you will find a blank screen with a search bar at the top. You may search for any song that you like.
 - After searching for the song, you may add it to the playlist using the add button attached to each song.
