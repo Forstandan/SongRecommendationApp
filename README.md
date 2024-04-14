@@ -1,3 +1,5 @@
+**Note: This app is no longer supported. The endpoints and API used for this project are no longer supported and as a result none of the features in the app will work**
+
 **Program Instructions (Requires Android Studios)**
 - Download and extract the zip file
 - Open up Android Studios and press File -> Open. When you find where the file is stored,
@@ -13,6 +15,8 @@
 - Once you open the app, you will find a blank screen with a search bar at the top. You may search for any song that you like.
 - After searching for the song, you may add it to the playlist using the add button attached to each song.
 - Once you are done, you may navigate to the playlist by pressing the dropdown menu at the top right corner of the screen and pressing the Home button
+
+![Screenshot_20240414-151506_MusePlayer](https://github.com/Forstandan/SongRecommendationApp/assets/114364542/9176f15e-5c0d-4e03-afd7-5cbdf6a93e40)
 
 **Notes**
 - There are many unfinished features in this version of the build. There is currently no way to play the songs or get recommendations in the app.
